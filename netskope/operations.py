@@ -22,9 +22,12 @@ class Netskope:
         self.api_token = config['api_token']
         self.verify_ssl = config['verify_ssl']
 
-    def make_rest_call(self, endpoint, method="GET", params=None, data=None):
+
+    def make_rest_call(self, endpoint, method="GET", params=None, data=None, json_data=None):
         headers = {'Netskope-Api-Token': self.api_token}
         service_endpoint = self.base_url + endpoint
+        if json_data is not None:
+            headers['Content-Type'] = 'application/json'
         try:
             logger.debug(f"\n{method} {service_endpoint}\nparams: {params}\ndata: {data}")
             try:
@@ -33,7 +36,7 @@ class Netskope:
                           verify_ssl=self.verify_ssl)
             except Exception:
                 pass
-            response = request(method, service_endpoint, params=params, data=data, headers=headers,
+            response = request(method, service_endpoint, params=params, data=data, json=json_data, headers=headers,
                                verify=self.verify_ssl)
             if response.ok:
                 if response.text != "":
@@ -77,10 +80,10 @@ def check_payload(payload):
 
 
 def convert_datetime_to_epoch(date_time):
-    unix_epoch = datetime.datetime(1970, 1, 1)
-    d1 = datetime.datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.%fZ")
+    unix_epoch = datetime(1970, 1, 1)
+    d1 = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S.%fZ")
     epoch = (d1 - unix_epoch).total_seconds()
-    return int(epoch * 1000)
+    return int(epoch)
 
 
 def get_alerts_list(config, params):
@@ -155,6 +158,12 @@ def create_url_list(config, params):
     response = ob.make_rest_call("/policy/urllist", "POST", data=json.dumps(data))
     return response
 
+def apply_url_list(config, params):
+    ob = Netskope(config)
+    endpoint = "/policy/urllist/deploy"
+    response = ob.make_rest_call(endpoint=endpoint, method="POST")
+    return response
+
 
 def get_url_list(config, params):
     ob = Netskope(config)
@@ -184,7 +193,7 @@ def add_url_list(config, params):
         }
     }
     data = check_payload(payload)
-    response = ob.make_rest_call(endpoint=endpoint, method="PATCH", data=json.dumps(data))
+    response = ob.make_rest_call(endpoint=endpoint, method="PATCH", data=json.dumps(data), json_data=data)
     return response
 
 
@@ -199,7 +208,7 @@ def update_url_list(config, params):
         "name": params.get("name")
     }
     data = check_payload(payload)
-    response = ob.make_rest_call(endpoint=endpoint, method="PUT", data=json.dumps(data))
+    response = ob.make_rest_call(endpoint=endpoint, method="PUT", data=json.dumps(data), json_data=data)
     return response
 
 
@@ -236,7 +245,7 @@ def send_custom_request(config, params):
         else:
             payload = None
         response = ob.make_rest_call(endpoint=endpoint, method=http_method, params=query_params,
-                                     data=json.dumps(payload))
+                                     data=json.dumps(payload), json_data=data)
         return response
     except Exception as err:
         raise ConnectorError(str(err))
@@ -251,6 +260,7 @@ operations = {
     "get_alerts_list": get_alerts_list,
     "get_events_list": get_events_list,
     "create_url_list": create_url_list,
+    "apply_url_list": apply_url_list,
     "get_url_list": get_url_list,
     "get_url_list_details": get_url_list_details,
     "add_url_list": add_url_list,
