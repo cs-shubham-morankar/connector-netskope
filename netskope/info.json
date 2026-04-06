@@ -403,7 +403,7 @@
     },
     {
       "operation": "apply_url_list",
-      "title": "Apply Pending URL List Changes",
+      "title": "Apply Pending URL Changes",
       "annotation": "apply_url_list",
       "category": "investigation",
       "description": "Applies all pending URL list changes that have been staged, making them active in your tenant.",

@@ -330,7 +330,7 @@
         {
           "@type": "Workflow",
           "triggerLimit": null,
-          "name": "Apply Pending URL List Changes",
+          "name": "Apply Pending URL Changes",
           "aliasName": null,
           "tag": null,
           "description": "Applies all pending URL list changes that have been staged, making them active in your tenant.",
@@ -347,7 +347,7 @@
           "steps": [
             {
               "@type": "WorkflowStep",
-              "name": "Apply Pending URL List Changes",
+              "name": "Apply Pending URL Changes",
               "description": null,
               "arguments": {
                 "name": "Netskope",
@@ -356,7 +356,7 @@
                 "version": "2.1.0",
                 "connector": "netskope",
                 "operation": "apply_url_list",
-                "operationTitle": "Apply Pending URL List Changes",
+                "operationTitle": "Apply Pending URL Changes",
                 "pickFromTenant": false,
                 "step_variables": []
               },
@@ -373,7 +373,7 @@
               "description": null,
               "arguments": {
                 "route": "fdcd8a7b-1edb-40b4-b546-4cb452c960cd",
-                "title": "Netskope: Apply Pending URL List Changes",
+                "title": "Netskope: Apply Pending URL Changes",
                 "resources": [
                   "alerts"
                 ],
@@ -406,7 +406,7 @@
           "routes": [
             {
               "@type": "WorkflowRoute",
-              "name": "Start -> Apply Pending URL List Changes",
+              "name": "Start -> Apply Pending URL Changes",
               "targetStep": "/api/3/workflow_steps/b20e16c2-bd98-4bdd-bc5b-49194e1a6e41",
               "sourceStep": "/api/3/workflow_steps/49ec0617-a420-44fa-a8f0-84bdeaea2d38",
               "label": null,
